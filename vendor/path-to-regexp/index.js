@@ -103,7 +103,7 @@ function arrayToRegexp (path, keys, options) {
 }
 
 /**
- * Replace the specific tags with regexp Strings.
+ * Replace the specific tags with regexp strings.
  *
  * @param  {String} path
  * @param  {Array}  keys
@@ -150,7 +150,7 @@ function replacePath (path, keys) {
 }
 
 /**
- * Normalize the given path String, returning a regular expression.
+ * Normalize the given path string, returning a regular expression.
  *
  * An empty array can be passed in for the keys, which will hold the
  * placeholder key descriptions. For example, using `/user/:id`, `keys` will

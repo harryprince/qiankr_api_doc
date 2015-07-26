@@ -20,7 +20,7 @@ define([
 
     /**
      * Return localized Text.
-     * @param String text
+     * @param string text
      */
     Handlebars.registerHelper('__', function(text) {
         return locale.__(text);
@@ -37,7 +37,7 @@ define([
 
     /**
      * Replace underscore with space.
-     * @param String text
+     * @param string text
      */
     Handlebars.registerHelper('underscoreToSpace', function(text) {
         return text.replace(/(_+)/g, ' ');
@@ -50,7 +50,7 @@ define([
         if(arguments.length > 0) {
             var type = typeof(arguments[1]);
             var arg = null;
-            if(type === 'String' || type === 'number' || type === 'boolean') arg = arguments[1];
+            if(type === 'string' || type === 'number' || type === 'boolean') arg = arguments[1];
             Handlebars.registerHelper(name, function() { return arg; });
         }
         return '';
@@ -110,7 +110,7 @@ define([
      *
      */
     Handlebars.registerHelper('toLowerCase', function(value) {
-        return (value && typeof value === 'String') ? value.toLowerCase() : '';
+        return (value && typeof value === 'string') ? value.toLowerCase() : '';
     });
 
     /**

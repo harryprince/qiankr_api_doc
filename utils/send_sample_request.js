@@ -37,7 +37,7 @@ define([
           $root.find("[data-sample-request-header-group=\"" + group + "\"]").each(function(i, element) {
             var key = $(element).data("sample-request-header-name");
             var value = element.value;
-            header[key] = $.type(value) === "String" ? escapeHtml(value) : value;
+            header[key] = $.type(value) === "string" ? escapeHtml(value) : value;
           });
       });
 
@@ -48,7 +48,7 @@ define([
           $root.find("[data-sample-request-param-group=\"" + group + "\"]").each(function(i, element) {
             var key = $(element).data("sample-request-param-name");
             var value = element.value;
-            param[key] = $.type(value) === "String" ? escapeHtml(value) : value;
+            param[key] = $.type(value) === "string" ? escapeHtml(value) : value;
           });
       });
 
@@ -73,7 +73,7 @@ define([
           url: url,
           dataType: "json",
           contentType: "application/json",
-          data: JSON.Stringify(param),
+          data: JSON.stringify(param),
           headers: header,
           type: type.toUpperCase(),
           success: displaySuccess,
@@ -83,7 +83,7 @@ define([
       function displaySuccess(data) {
           var jsonResponse;
           try {
-              jsonResponse = JSON.Stringify(data, null, 4);
+              jsonResponse = JSON.stringify(data, null, 4);
           } catch (e) {
               jsonResponse = data;
           }
@@ -97,7 +97,7 @@ define([
           var jsonResponse;
           try {
               jsonResponse = JSON.parse(jqXHR.responseText);
-              jsonResponse = JSON.Stringify(jsonResponse, null, 4);
+              jsonResponse = JSON.stringify(jsonResponse, null, 4);
           } catch (e) {
               jsonResponse = jqXHR.responseText;
           }
