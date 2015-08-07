@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <!--<script src="../release/flowchart-1.4.0.min.js"></script>-->
+        <script>
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+                (btn.onclick = function () {
+                    var code = cd.value;
+                    if (chart) {
+                      chart.clean();
+                    }
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'line-length': 50,
+                      'text-margin': 10,
+                      'font-size': 14,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+            };
+        </script>
+    </head>
+    <body>
+        <div><textarea id="code" style="width: 100%;" rows="0">
+start=>start: 千刻 iOS App 主页|past:>login[blank]
+end=>end: 结束操作:>logout
+//操作
+operation_check_recommend_events=>operation: 查看推荐任务列表|current
+operation_create_event=>operation: 主编上线任务|past
+operation_delete_event=>operation: 主编下线任务|past
+operation_upload_event_image=>operation: 编辑上传任务图片|current
+operation_join_event=>operation: 参与任务|current
+operation_unjoin_event=>operation: 取消参与任务|current
+operation_cancel_upload_image=>operation: 取消上传图片|current
+operation_check_=>operation: 查看任务|current
+operation_load_image=>operation: 加载图片|current
+operation_initial_album=>operation: 初始化空任务|current
+operation_no_load_image=>operation: 暂不加载图片|current
+//条件
+condition_pick_upload_image=>condition: 是否选择上传图片| approved:>
+condition_join_event=>condition: 是否参与任务|approved:>
+condition_check_event=>condition: 是否查看任务|approved:>
+condition_legal_image=>condition: 是否合法用户图片|approved:>
+
+//逻辑
+operation_create_event->start->operation_check_recommend_events->condition_check_event
+condition_check_event(no)->end
+condition_check_event(yes)->condition_legal_image
+condition_legal_image(yes)->operation_load_image->condition_join_event
+condition_legal_image(no)->operation_no_load_image->condition_join_event
+condition_join_event(yes)->condition_pick_upload_image
+condition_pick_upload_image(yes)->operation_join_event->end
+condition_pick_upload_image(no)->end
+condition_join_event(no)->end->operation_delete_event
+
+
+        </textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+        <div id="canvas"></div>
+    </body>
+
+    <script type="text/javascript" src="raphael-min.js"></script>
+    <script type="text/javascript" src="flowchart-1.4.0.js"></script>
+    <script type="text/javascript" src="temp.js"></script>
+</html>

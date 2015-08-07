@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <!--<script src="../release/flowchart-1.4.0.min.js"></script>-->
+        <script>
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+                (btn.onclick = function () {
+                    var code = cd.value;
+                    if (chart) {
+                      chart.clean();
+                    }
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'line-length': 50,
+                      'text-margin': 10,
+                      'font-size': 14,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+            };
+        </script>
+    </head>
+    <body>
+        <div><textarea id="code" style="width: 100%;" rows="0">
+start=>start: 欢迎进入千刻 iOS App|past:>login[blank]
+end=>end: 登陆成功:>logout
+//操作
+operation_phone_login=>operation: 手机登陆|current
+operation_reset_password=>operation: 忘记重置密码|current
+operation_phone_signup=>operation: 手机注册|current
+operation_wechat_login=>operation: 微信登陆|current
+operation_weibo_login=>operation: 微博登陆|current
+operation_phone_verify_1=>operation: 验证码服务|current
+operation_phone_verify_2=>operation: 验证码服务|current
+
+//条件
+condition_login=>condition: 是否登陆| approved:>
+condition_signup=>condition: 是否注册|approved:>
+condition_phone_login=>condition: 是否手机登陆|approved:>
+condition_thirdparty_login=>condition: 是否第三方登陆|approved:>
+condition_wechat_login=>condition: 是否微信登陆|approved:>
+condition_weibo_login=>condition: 是否微博登陆|approved:>
+
+//逻辑
+start->condition_login
+condition_login(yes,left)->condition_phone_login
+condition_login(no,right)->condition_signup
+condition_signup(yes,right)->operation_phone_verify_1->operation_phone_signup->end
+condition_signup(no)->operation_phone_verify_2->operation_reset_password->end
+operation_phone_signup->operation_phone_login->end
+condition_phone_login(yes,right)->operation_phone_login->end
+condition_phone_login(no,left)->condition_wechat_login->end
+condition_wechat_login(yes,left)->operation_wechat_login->end
+condition_wechat_login(no,right)->operation_weibo_login->end
+
+        </textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+        <div id="canvas"></div>
+    </body>
+
+    <script type="text/javascript" src="raphael-min.js"></script>
+    <script type="text/javascript" src="flowchart-1.4.0.js"></script>
+    <script type="text/javascript" src="temp.js"></script>
+</html>

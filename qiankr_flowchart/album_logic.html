@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <!--<script src="../release/flowchart-1.4.0.min.js"></script>-->
+        <script>
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+                (btn.onclick = function () {
+                    var code = cd.value;
+                    if (chart) {
+                      chart.clean();
+                    }
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'line-length': 50,
+                      'text-margin': 10,
+                      'font-size': 14,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+            };
+        </script>
+    </head>
+    <body>
+        <div><textarea id="code" style="width: 100%;" rows="0">
+start=>start: 千刻 iOS App 主页|past:>login[blank]
+end=>end: 结束操作:>logout
+//操作
+operation_check_recommend_albums=>operation: 查看推荐专辑列表|current
+operation_create_album=>operation: 创建专辑|current
+operation_get_upload_token=>operation: 获取传图Token|current
+operation_edit_ablum=>operation: 编辑专辑|current
+operation_delete_album=>operation: 删除专辑|current
+operation_cancel_edit_album=>operation: 取消编辑专辑|current
+operation_cancel_upload_image=>operation: 取消上传图片|current
+operation_check_album=>operation: 查看专辑|current
+operation_load_image=>operation: 加载图片|current
+operation_initial_album=>operation: 初始化空专辑|current
+operation_delete_comment=>operation: 删除评论|current
+operation_check_comments=>operation: 查看评论列表|current
+operation_comment_album=>operation: 评论专辑|current
+operation_like_album=>operation: 点赞专辑|current
+operation_report_album=>operation: 举报专辑|current
+//条件
+condition_pick_upload_image=>condition: 是否选择上传图片| approved:>
+condition_edit_album=>condition: 是否编辑专辑|approved:>
+condition_delete_album=>condition: 是否删除专辑|approved:>
+condition_create_album=>condition: 是否创建专辑|approved:>
+condition_check_album=>condition: 是否查看专辑|approved:>
+condition_legal_image=>condition: 是否合法图片|approved:>
+condition_comment_album=>condition: 是否评论专辑|approved:>
+condition_check_comment=>condition: 是否查看评论|approved:>
+condition_delete_comment=>condition: 是否删除评论|approved:>
+condition_like_album=>condition: 是否点赞专辑|approved:>
+condition_report_album=>condition: 是否举报专辑|approved:>
+
+//逻辑
+start->operation_check_recommend_albums->condition_create_album
+condition_create_album(no)->condition_check_album
+condition_create_album(yes)->operation_initial_album->condition_pick_upload_image
+condition_check_album(yes,right)->condition_legal_image
+condition_legal_image(yes)->operation_check_album->condition_like_album
+condition_like_album(yes,right)->operation_like_album->condition_check_comment
+condition_like_album(no)->condition_check_comment
+condition_check_comment(yes,right)->operation_check_comments->condition_comment_album
+condition_comment_album(yes)->condition_delete_comment
+condition_delete_comment(yes,right)->operation_delete_comment->condition_comment_album
+condition_delete_comment(no)->condition_comment_album
+condition_comment_album(no)->end
+condition_check_comment(no)->end
+condition_legal_image(no)->end
+condition_check_album(no)->end
+condition_pick_upload_image(no)->end
+condition_pick_upload_image(yes)->condition_edit_album
+condition_edit_album(no)->end
+condition_edit_album(yes)->operation_edit_ablum->condition_delete_album
+condition_delete_album(yes)->operation_delete_album->end
+condition_delete_album(no)->end
+end->condition_report_album
+condition_report_album(yes)->operation_report_album->end
+condition_report_album(no)->end
+        </textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+        <div id="canvas"></div>
+    </body>
+
+    <script type="text/javascript" src="raphael-min.js"></script>
+    <script type="text/javascript" src="flowchart-1.4.0.min.js"></script>
+    <script type="text/javascript" src="temp.js"></script>
+</html>

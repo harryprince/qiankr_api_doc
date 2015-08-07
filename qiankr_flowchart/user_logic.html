@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <!--<script src="../release/flowchart-1.4.0.min.js"></script>-->
+        <script>
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+                (btn.onclick = function () {
+                    var code = cd.value;
+                    if (chart) {
+                      chart.clean();
+                    }
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'line-length': 50,
+                      'text-margin': 10,
+                      'font-size': 14,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+            };
+        </script>
+    </head>
+    <body>
+        <div><textarea id="code" style="width: 100%;" rows="0">
+//版本 0.1.0
+start=>start: 千刻 iOS App 主页|past:>login[blank]
+end=>end: 结束操作:>logout
+//操作
+operation_check_recommend_users=>operation: 查看推荐摄影师列表|current
+operation_check_user=>operation: 查看摄影师个人资料及其作品列表|current
+operation_follow_user=>operation: 关注摄影师|current
+operation_unfollow_user=>operation: 取消关注摄影师|current
+operation_check_album=>operation: 查看摄影师专辑|current
+operation_complaint=>operation: 投诉建议|current
+operation_edit_user=>operation: 编辑本人资料|current
+
+//条件
+condition_owner=>condition: 是否属于本人资料|approved:>
+condition_edit_user=>condition: 是否编辑本人资料|approved:>
+condition_check_user=>condition: 是否查看摄影师资料|approved:>
+condition_complaint=>condition: 是否投诉建议|approved:>
+condition_follow=>condition: 是否关注摄影师|approved:>
+
+//逻辑
+start->operation_check_recommend_users->condition_check_user
+condition_check_user(no)->end
+condition_check_user(yes,left)->operation_check_user->condition_owner
+condition_owner(yes)->condition_edit_user
+condition_edit_user(yes,left)->operation_edit_user->condition_check_user
+condition_edit_user(no)->condition_check_user
+condition_owner(no)->condition_follow
+condition_follow(yes,right)->operation_follow_user->condition_check_user
+condition_follow(no)->condition_check_user
+end->condition_complaint
+condition_complaint(yes,right)->operation_complaint->end
+condition_complaint(no)->end
+
+        </textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+        <div id="canvas"></div>
+    </body>
+
+    <script type="text/javascript" src="raphael-min.js"></script>
+    <script type="text/javascript" src="flowchart-1.4.0.js"></script>
+</html>
