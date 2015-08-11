@@ -78,6 +78,7 @@ operation_wechat_login=>operation: 微信登陆|current
 operation_weibo_login=>operation: 微博登陆|current
 operation_phone_verify_1=>operation: 验证码服务|current
 operation_phone_verify_2=>operation: 验证码服务|current
+operation_complete_user_profile=>operation: 完善用户信息|current
 
 //条件
 condition_login=>condition: 是否登陆| approved:>
@@ -91,13 +92,12 @@ condition_weibo_login=>condition: 是否微博登陆|approved:>
 start->condition_login
 condition_login(yes,left)->condition_phone_login
 condition_login(no,right)->condition_signup
-condition_signup(yes,right)->operation_phone_verify_1->operation_phone_signup->end
+condition_signup(yes,right)->operation_phone_verify_1->operation_phone_signup->operation_complete_user_profile->operation_phone_login->end
 condition_signup(no)->operation_phone_verify_2->operation_reset_password->end
-operation_phone_signup->operation_phone_login->end
 condition_phone_login(yes,right)->operation_phone_login->end
 condition_phone_login(no,left)->condition_wechat_login->end
-condition_wechat_login(yes,left)->operation_wechat_login->end
-condition_wechat_login(no,right)->operation_weibo_login->end
+condition_wechat_login(yes)->operation_wechat_login->end
+condition_wechat_login(no)->operation_weibo_login->end
 
         </textarea></div>
         <div><button id="run" type="button">Run</button></div>
