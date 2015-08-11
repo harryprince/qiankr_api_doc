@@ -105,7 +105,18 @@ condition_wechat_login(no)->operation_weibo_login->end
         <a href="http://harryprince.github.io/qiankr_api_doc">返回千刻API文档首页</a>
         <p>Author: Harry Zhu</p>
         <p>Datetime: Aug 8,2015</p>
-
+        <p>
+Comment:
+        </p>
+        <p>
+          1. 第三方登陆后 若是新用户需要调用第三方登陆接口，传入相关信息新建用户；若为老用户则直接登陆
+        </p>
+  <p>
+    2. 前端需要验证用户输入时候符合规范：手机号码 是否为11位数字；密码是否符合安全性（类支付宝）；验证码是否4位数字
+  </p>
+  <p>
+    3. 用户注册过程中的行为产生时，前端应提供必要的 用户反馈！类似 微信、支付宝。
+  </p>
     </body>
 
     <script type="text/javascript" src="raphael-min.js"></script>
